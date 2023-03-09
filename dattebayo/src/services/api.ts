@@ -1,6 +1,7 @@
 import {
     IAttributes,
     IAttributes2,
+    IAttributes3,
     IInfo,
     IRelationship,
     ITag
@@ -19,14 +20,16 @@ export async function getAllManga(): Promise<IInfo[]> {
     const mangaInfo: IInfo[] = [];
     allManga.map((manga: string) => {
         const current: { [key: string]: unknown } = JSON.parse(JSON.stringify(manga));
+
         return mangaInfo.push({
             id: current?.id as string ?? "unknown",
             type: current?.type as string ?? "unknown",
             attributes: current?.attributes !== null && current?.attributes !== "" ? setAttributes(current?.attributes as string) : "none",
-            relationships: current?.relationships as IRelationship[] ?? [],
+            relationships: current?.relationships !== null && current?.relationships !== "" ? setRelationships(current?.relationships as string) : "none",
         });
     });
 
+    console.log(mangaInfo)
     return mangaInfo;
 }
 
@@ -110,4 +113,28 @@ function setAttributes2(attr: string): IAttributes2 {
     };
 
     return myAttr2;
+}
+
+function setRelationships(rel: string): IRelationship[] {
+
+    const current: Array<{ [key: string]: string }> = JSON.parse(JSON.stringify(rel));
+
+    const myRels: IRelationship[] = [];
+
+    Array.from(current).map((relationship: { [key: string]: string }) => {
+        if (!relationship?.attributes) {
+            return myRels.push({
+                id: (relationship?.id !== null && relationship?.id !== "") ? relationship?.id : "unknown",
+                type: (relationship?.type !== null && relationship?.type !== "") ? relationship?.type : "unknown"
+            });
+        }
+
+        return myRels.push({
+            id: (relationship?.id !== null && relationship?.id !== "") ? relationship?.id : "unknown",
+            type: (relationship?.type !== null && relationship?.type !== "") ? relationship?.type : "unknown",
+            attributes: {} as IAttributes3,
+        });
+    });
+
+    return myRels;
 }

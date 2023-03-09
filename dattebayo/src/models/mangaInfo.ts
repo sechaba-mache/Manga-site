@@ -2,7 +2,7 @@ export interface IInfo {
     id: string
     type: string
     attributes: IAttributes | string
-    relationships: IRelationship[]
+    relationships: IRelationship[] | string
 }
 
 export interface IAttributes {
