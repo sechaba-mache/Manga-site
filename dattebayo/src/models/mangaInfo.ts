@@ -1,16 +1,16 @@
 export interface IInfo {
     id: string
     type: string
-    attributes: IAttributes
+    attributes: IAttributes | string
     relationships: IRelationship[]
 }
 
 export interface IAttributes {
     title: { [key: string]: string }
-    altTitles: { [key: string]: string }[]
-    description: { [key: string]: string }[]
+    altTitles: { [key: string]: string }[] | string
+    description: { [key: string]: string }[] | string
     isLocked: boolean
-    links: { [key: string]: string }[]
+    links: { [key: string]: string }[] | string
     originalLanguage: string
     lastVolume: number | string
     lastChapter: number | string
@@ -24,7 +24,7 @@ export interface IAttributes {
     createdAt: string
     updatedAt: string
     version: number | string
-    availableTranslatedLanguages: string[]
+    availableTranslatedLanguages: string[] | string
     latestUploadedChapter: string
 }
 
