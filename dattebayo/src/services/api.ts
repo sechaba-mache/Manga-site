@@ -29,7 +29,6 @@ export async function getAllManga(): Promise<IInfo[]> {
         });
     });
 
-    console.log(mangaInfo)
     return mangaInfo;
 }
 
@@ -83,11 +82,12 @@ function setTags(tags: string): ITag[] {
 
     const myTags: ITag[] = [];
     Array.from(current).map((tag) => {
+
         return myTags.push({
             id: tag?.id !== null ? tag?.id : "unknown",
             type: tag?.type !== null ? tag?.type : "tag",
             attributes: tag?.attributes !== null && tag?.attributes !== "" ? setAttributes2(tag?.attributes as string) : "none",
-            relationships: []
+            relationships: tag?.relationships.length > 0 ? setRelationships(tag?.relationships) : "none",
         });
     });
 
@@ -107,7 +107,7 @@ function setAttributes2(attr: string): IAttributes2 {
 
     const myAttr2: IAttributes2 = {
         name: JSON.parse(JSON.stringify(current?.name)) ?? "unknown",
-        description: descriptionArray,
+        description: descriptionArray.length > 0 ? descriptionArray : "none",
         group: (current?.group !== null && current?.group !== "") ? current?.group : "unknown",
         version: (current?.version !== null && current?.version !== "") ? current?.version : "unknown"
     };
@@ -132,9 +132,26 @@ function setRelationships(rel: string): IRelationship[] {
         return myRels.push({
             id: (relationship?.id !== null && relationship?.id !== "") ? relationship?.id : "unknown",
             type: (relationship?.type !== null && relationship?.type !== "") ? relationship?.type : "unknown",
-            attributes: {} as IAttributes3,
+            attributes: relationship?.attributes !== null && relationship?.attributes !== "" ? setAttributes3(relationship?.attributes as string) : "none",
         });
     });
 
     return myRels;
+}
+
+function setAttributes3(attr: string): IAttributes3 {
+
+    const current: { [key: string]: string } = JSON.parse(JSON.stringify(attr));
+
+    const myAttr3: IAttributes3 = {
+        description: (current?.description !== null && current?.description !== "") ? current?.description : "unknown",
+        volume: (current?.volume !== null && current?.volume !== "") ? Number(current?.volume) : "unknown",
+        fileName: (current?.fileName !== null && current?.fileName !== "") ? current?.fileName : "unknown",
+        locale: (current?.locale !== null && current?.locale !== "") ? current?.locale : "unknown",
+        createdAt: (current?.createdAt !== null && current?.createdAt !== "") ? current?.createdAt : "unknown",
+        updatedAt: (current?.updatedAt !== null && current?.updatedAt !== "") ? current?.updatedAt : "unknown",
+        version: (current?.version !== null && current?.version !== "") ? Number(current?.version) : "unknown",
+    };
+
+    return myAttr3;
 }

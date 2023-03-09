@@ -32,12 +32,12 @@ export interface ITag {
     id: string
     type: string
     attributes: IAttributes2 | string
-    relationships: IRelationship[]
+    relationships: IRelationship[] | string
 }
 
 export interface IAttributes2 {
     name: { [key: string]: string }
-    description: { [key: string]: string }[]
+    description: { [key: string]: string }[] | string
     group: string
     version: number | string
 }
@@ -45,15 +45,15 @@ export interface IAttributes2 {
 export interface IRelationship {
     id: string
     type: string
-    attributes?: IAttributes3
+    attributes?: IAttributes3 | string
 }
 
 export interface IAttributes3 {
-    description: { [key: string]: string }
-    volume: number
+    description: string
+    volume: number | string
     fileName: string
     locale: string
     createdAt: string
     updatedAt: string
-    version: number
+    version: number | string
 }
