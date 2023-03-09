@@ -1,10 +1,16 @@
-import { IAttributes, IInfo, IRelationship } from "../models/mangaInfo";
+import {
+    IAttributes,
+    IAttributes2,
+    IInfo,
+    IRelationship,
+    ITag
+} from "../models/mangaInfo";
 
 const baseURL: string = "https://api.mangadex.org";
 const coversURL: string = "https://uploads.mangadex.org";
 
 export async function getAllManga(): Promise<IInfo[]> {
-    const allManga: Array<string> = await fetch(`${baseURL}/manga?includes[]=cover_art&contentRating[]=safe&limit=100`)
+    const allManga: Array<string> = await fetch(`${baseURL}/manga?includes[]=cover_art&contentRating[]=safe&limit=1`)
         .then((res) => res.json())
         .then((data) => data.data)
         .catch((err) => console.error("An error has occured", err));
@@ -54,7 +60,7 @@ function setAttributes(attr: string): IAttributes {
         status: current?.status !== null ? current?.status : "unknown",
         year: current?.year !== null ? Number(current?.year) : "unknown",
         contentRating: current?.contentRating,
-        tags: [], // Add setTags function
+        tags: current?.tags !== null && current?.tags !== "" ? setTags(current?.tags as string) : "none",
         state: current?.state !== null ? current?.state : "unknown",
         chapterNumbersResetOnNewVolume: current?.chapterNumbersResetOnNewVolume === "true" ? true : false,
         createdAt: current?.createdAt !== null ? current?.createdAt : "unknown",
@@ -65,4 +71,21 @@ function setAttributes(attr: string): IAttributes {
     };
 
     return myAttr;
+}
+
+function setTags(tags: string): ITag[] {
+
+    const current: Array<{ [key: string]: string }> = JSON.parse(JSON.stringify(tags));
+
+    const myTags: ITag[] = [];
+    Array.from(current).map((tag) => {
+        return myTags.push({
+            id: tag?.id !== null ? tag?.id : "unknown",
+            type: tag?.type !== null ? tag?.type : "tag",
+            attributes: {} as IAttributes2,
+            relationships: []
+        });
+    });
+
+    return myTags;
 }
