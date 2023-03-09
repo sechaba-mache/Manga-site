@@ -10,6 +10,7 @@ const baseURL: string = "https://api.mangadex.org";
 const coversURL: string = "https://uploads.mangadex.org";
 
 export async function getAllManga(): Promise<IInfo[]> {
+    // Don't forget to set limit back to 100
     const allManga: Array<string> = await fetch(`${baseURL}/manga?includes[]=cover_art&contentRating[]=safe&limit=1`)
         .then((res) => res.json())
         .then((data) => data.data)
@@ -53,21 +54,21 @@ function setAttributes(attr: string): IAttributes {
         description: descriptionArray.length > 0 ? descriptionArray : "none",
         isLocked: current?.isLocked === "true" ? true : false,
         links: linksArray.length > 0 ? linksArray : "none",
-        originalLanguage: current?.originalLanguage,
+        originalLanguage: (current?.originalLanguage !== null && current?.originalLanguage !== "") ? current?.originalLanguage : "unknown",
         lastVolume: (current?.lastVolume !== null && current?.lastVolume !== "") ? Number(current?.lastVolume) : "unknown",
         lastChapter: (current?.lastChapter !== null && current?.lastChapter !== "") ? Number(current?.lastChapter) : "unknown",
-        publicationDemographic: current?.publicationDemographic !== null ? current?.publicationDemographic : "unknown",
-        status: current?.status !== null ? current?.status : "unknown",
+        publicationDemographic: (current?.publicationDemographic !== null && current?.publicationDemographic !== "") ? current?.publicationDemographic : "unknown",
+        status: (current?.status !== null && current?.status !== "") ? current?.status : "unknown",
         year: current?.year !== null ? Number(current?.year) : "unknown",
         contentRating: current?.contentRating,
         tags: current?.tags !== null && current?.tags !== "" ? setTags(current?.tags as string) : "none",
-        state: current?.state !== null ? current?.state : "unknown",
+        state: (current?.state !== null && current?.state !== "") ? current?.state : "unknown",
         chapterNumbersResetOnNewVolume: current?.chapterNumbersResetOnNewVolume === "true" ? true : false,
-        createdAt: current?.createdAt !== null ? current?.createdAt : "unknown",
-        updatedAt: current?.updatedAt !== null ? current?.updatedAt : "unknwon",
-        version: current?.version !== null ? Number(current?.version) : "unknown",
+        createdAt: (current?.createdAt !== null && current?.createdAt !== "") ? current?.createdAt : "unknown",
+        updatedAt: (current?.updatedAt !== null && current?.updatedAt !== "") ? current?.updatedAt : "unknwon",
+        version: (current?.version !== null && current?.version !== "") ? Number(current?.version) : "unknown",
         availableTranslatedLanguages: Array.from(current?.availableTranslatedLanguages).length > 0 ? Array.from(current?.availableTranslatedLanguages) : "none",
-        latestUploadedChapter: current?.latestUploadedChapter !== null ? current?.latestUploadedChapter : "unknown"
+        latestUploadedChapter: (current?.latestUploadedChapter !== null && current?.latestUploadedChapter !== "") ? current?.latestUploadedChapter : "unknown"
     };
 
     return myAttr;
@@ -82,10 +83,31 @@ function setTags(tags: string): ITag[] {
         return myTags.push({
             id: tag?.id !== null ? tag?.id : "unknown",
             type: tag?.type !== null ? tag?.type : "tag",
-            attributes: {} as IAttributes2,
+            attributes: tag?.attributes !== null && tag?.attributes !== "" ? setAttributes2(tag?.attributes as string) : "none",
             relationships: []
         });
     });
 
     return myTags;
+}
+
+function setAttributes2(attr: string): IAttributes2 {
+
+    const current: { [key: string]: string } = JSON.parse(JSON.stringify(attr));
+
+    const descriptionArray: Array<{ [key: string]: string }> = [];
+    Array.from(Object.keys(current?.description)).map((entry: string, index: number): number => {
+        return descriptionArray.push({
+            [entry]: Object.values(current?.description)[index]
+        });
+    });
+
+    const myAttr2: IAttributes2 = {
+        name: JSON.parse(JSON.stringify(current?.name)) ?? "unknown",
+        description: descriptionArray,
+        group: (current?.group !== null && current?.group !== "") ? current?.group : "unknown",
+        version: (current?.version !== null && current?.version !== "") ? current?.version : "unknown"
+    };
+
+    return myAttr2;
 }

@@ -18,7 +18,7 @@ export interface IAttributes {
     status: string
     year: number | string
     contentRating: string
-    tags: ITag[]
+    tags: ITag[] | string
     state: string
     chapterNumbersResetOnNewVolume: boolean
     createdAt: string
@@ -31,7 +31,7 @@ export interface IAttributes {
 export interface ITag {
     id: string
     type: string
-    attributes: IAttributes2
+    attributes: IAttributes2 | string
     relationships: IRelationship[]
 }
 
@@ -39,7 +39,7 @@ export interface IAttributes2 {
     name: { [key: string]: string }
     description: { [key: string]: string }[]
     group: string
-    version: number
+    version: number | string
 }
 
 export interface IRelationship {
