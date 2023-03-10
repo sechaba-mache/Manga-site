@@ -1,3 +1,4 @@
+import { IFeedAttributes, IFeedInfo } from "../models/mangaChapters";
 import {
     IAttributes,
     IAttributes2,
@@ -32,12 +33,56 @@ export async function getAllManga(): Promise<IInfo[]> {
     return mangaInfo;
 }
 
-export async function getManagCover(id: string, fileName: string): Promise<void | Blob> {
+export async function getMangaCover(id: string, fileName: string): Promise<void | Blob> {
 
-    const cover = await fetch(`${coversURL}/covers/${id}/${fileName}`)
-        .then((res) => { return res.blob() })
+    const cover: Blob | void = await fetch(`${coversURL}/covers/${id}/${fileName}`)
+        .then((res) => { return res.blob(); })
         .catch((err) => console.error(err));
     return cover;
+}
+
+export async function getMangaFeedByID(id: string): Promise<IFeedInfo[] | void> {
+
+    const feed: Array<string> = await fetch(`${baseURL}/manga/${id}/feed`)
+        .then((res) => { return res.json(); })
+        .then((data) => { return data.data; })
+        .catch((err) => console.error(err));
+
+    const mangaFeed: IFeedInfo[] = [];
+
+    feed.map((item: string) => {
+        const current = JSON.parse(JSON.stringify(item));
+
+        return mangaFeed.push({
+            id: current?.id !== null && current?.id !== "" ? current?.id : "unknown",
+            type: current?.type !== null && current?.type !== "" ? current?.type : "unknown",
+            attributes: (current?.attributes !== null && current?.attributes !== "") ? setFeedAttributes(current?.attributes) : "unknown",
+            relationships: current?.relationships !== null && current?.relationships !== "" ? setRelationships(current?.relationships) : "none"
+        });
+    });
+
+    return mangaFeed;
+}
+
+function setFeedAttributes(attr: string): IFeedAttributes {
+
+    const current: { [key: string]: string } = JSON.parse(JSON.stringify(attr));
+
+    const feedAttributes: IFeedAttributes = {
+        volume: (current?.volume !== null && current?.volume !== "") ? Number(current?.volume) : "unknown",
+        chapter: (current?.chapter !== null && current?.chapter !== "") ? Number(current?.chapter) : "unknown",
+        title: (current?.title !== null && current?.title !== "") ? current?.title : "unknown",
+        translatedLanguage: (current?.translatedLanguage !== null && current?.translatedLanguage !== "") ? current?.translatedLanguage : "unknown",
+        externalUrl: (current?.externalUrl !== null && current?.externalUrl !== "") ? current?.externalUrl : "unknown",
+        publishAt: (current?.publishAt !== null && current?.publishAt !== "") ? current?.publishAt : "unknown",
+        readableAt: (current?.readableAt !== null && current?.readableAt !== "") ? current?.readableAt : "unknown",
+        createdAt: (current?.createdAt !== null && current?.createdAt !== "") ? current?.createdAt : "unknown",
+        updatedAt: (current?.updatedAt !== null && current?.updatedAt !== "") ? current?.updatedAt : "unknown",
+        pages: (current?.pages !== null && current?.pages !== "") ? Number(current?.pages) : "unknown",
+        version: (current?.version !== null && current?.version !== "") ? Number(current?.version) : "unknown"
+    };
+
+    return feedAttributes;
 }
 
 function setAttributes(attr: string): IAttributes {
@@ -126,7 +171,6 @@ function setAttributes2(attr: string): IAttributes2 {
 function setRelationships(rel: string): IRelationship[] {
 
     const current: Array<{ [key: string]: string }> = JSON.parse(JSON.stringify(rel));
-
     const myRels: IRelationship[] = [];
 
     Array.from(current).map((relationship: { [key: string]: string }) => {
