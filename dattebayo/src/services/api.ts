@@ -11,8 +11,8 @@ const baseURL: string = "https://api.mangadex.org";
 const coversURL: string = "https://uploads.mangadex.org";
 
 export async function getAllManga(): Promise<IInfo[]> {
-    // Don't forget to set limit back to 100
-    const allManga: Array<string> = await fetch(`${baseURL}/manga?includes[]=cover_art&contentRating[]=safe&limit=1`)
+
+    const allManga: Array<string> = await fetch(`${baseURL}/manga?includes[]=cover_art&contentRating[]=safe&limit=100`)
         .then((res) => res.json())
         .then((data) => data.data)
         .catch((err) => console.error("An error has occured", err));
