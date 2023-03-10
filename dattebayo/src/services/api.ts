@@ -1,3 +1,4 @@
+import { IMangaBook } from "../models/mangaBook";
 import { IFeedAttributes, IFeedInfo } from "../models/mangaChapters";
 import {
     IAttributes,
@@ -10,6 +11,7 @@ import {
 
 const baseURL: string = "https://api.mangadex.org";
 const coversURL: string = "https://uploads.mangadex.org";
+const mangaBookURL: string = "https://api.mangadex.org/at-home/server";
 
 export async function getAllManga(): Promise<IInfo[]> {
 
@@ -62,6 +64,23 @@ export async function getMangaFeedByID(id: string): Promise<IFeedInfo[] | void> 
     });
 
     return mangaFeed;
+}
+
+export async function getMangaBook(chapterID: string) {
+
+    const book: string = await fetch(`${mangaBookURL}/${chapterID}`)
+        .then((res) => { return res.json(); })
+        .then((data) => { return data.chapter; })
+        .catch((err) => console.error(err));
+
+    const current = JSON.parse(JSON.stringify(book));
+
+    const manga: IMangaBook = {
+        hash: (current?.hash !== null && current?.hash !== "") ? current?.hash : "none",
+        data: (current?.data !== null && current?.data !== "") ? current?.data : "none",
+    };
+
+    return manga;
 }
 
 function setFeedAttributes(attr: string): IFeedAttributes {

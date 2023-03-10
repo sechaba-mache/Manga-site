@@ -12,7 +12,7 @@ export interface IFeedAttributes {
     chapter: string | number
     title: string
     translatedLanguage: string
-    externalUrl: any
+    externalUrl: string
     publishAt: string
     readableAt: string
     createdAt: string
