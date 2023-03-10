@@ -32,6 +32,14 @@ export async function getAllManga(): Promise<IInfo[]> {
     return mangaInfo;
 }
 
+export async function getManagCover(id: string, fileName: string): Promise<void | Blob> {
+
+    const cover = await fetch(`${coversURL}/covers/${id}/${fileName}`)
+        .then((res) => { return res.blob() })
+        .catch((err) => console.error(err));
+    return cover;
+}
+
 function setAttributes(attr: string): IAttributes {
 
     const current: { [key: string]: string } = JSON.parse(JSON.stringify(attr));
