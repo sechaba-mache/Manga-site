@@ -8,6 +8,7 @@ import {
     IRelationship,
     ITag
 } from "../models/mangaInfo";
+import { IComments, IRating, IStatistics } from "../models/mangaStats";
 
 const baseURL: string = "https://api.mangadex.org";
 const coversURL: string = "https://uploads.mangadex.org";
@@ -94,7 +95,47 @@ export async function getMangaBook(chapterID: string): Promise<Blob[]> {
     return book;
 }
 
+export async function getMangaStatsByID(id: string) {
 
+    const stats: string = await fetch(`${baseURL}/statistics/manga/${id}`)
+        .then((res) => { return res.json(); })
+        .then((data) => { return data.statistics[id] })
+        .catch((err) => console.error(err));
+
+    const current = JSON.parse(JSON.stringify(stats));
+
+    const mangaStats: IStatistics = {
+        comments: current?.comments !== null && current?.comments !== "" ? setComments(current?.comments) : "none",
+        rating: current?.rating !== null && current?.rating !== "" ? setRatings(current?.rating) : "none",
+        follows: current?.follows !== null && current?.follows !== "" ? Number(current?.follows) : "unknown"
+    }
+
+    return mangaStats;
+}
+
+function setComments(comments: string): IComments {
+
+    const current = JSON.parse(JSON.stringify(comments));
+
+    const comms: IComments = {
+        threadId: current?.threadId !== null && current?.threadId !== "" ? Number(current?.threadId) : "unknown",
+        repliesCount: current?.repliesCount !== null && current?.repliesCount !== "" ? Number(current?.repliesCount) : "unknown"
+    }
+
+    return comms;
+}
+
+function setRatings(ratings: string) {
+
+    const current = JSON.parse(JSON.stringify(ratings));
+
+    const rating: IRating = {
+        average: current?.average !== null && current?.average !== "" ? parseFloat(current?.average) : "unknown",
+        bayesian: current?.bayesian !== null && current?.bayesian !== "" ? parseFloat(current?.bayesian) : "unknown"
+    }
+
+    return rating;
+}
 
 function setFeedAttributes(attr: string): IFeedAttributes {
 
