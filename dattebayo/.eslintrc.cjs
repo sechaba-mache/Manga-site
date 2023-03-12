@@ -20,5 +20,6 @@ module.exports = {
 		"padded-blocks": "off",
 		"no-unneeded-ternary": "off",
 		"arrow-body-style": "off",
+		"@typescript-eslint/no-explicit-any": "error",
 	},
 };
