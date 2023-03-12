@@ -66,22 +66,35 @@ export async function getMangaFeedByID(id: string): Promise<IFeedInfo[] | void> 
     return mangaFeed;
 }
 
-export async function getMangaBook(chapterID: string) {
+export async function getMangaBook(chapterID: string): Promise<Blob[]> {
 
-    const book: string = await fetch(`${mangaBookURL}/${chapterID}`)
+    const bookInfo: string = await fetch(`${mangaBookURL}/${chapterID}`)
         .then((res) => { return res.json(); })
         .then((data) => { return data.chapter; })
         .catch((err) => console.error(err));
 
-    const current = JSON.parse(JSON.stringify(book));
+    const current = JSON.parse(JSON.stringify(bookInfo));
 
     const manga: IMangaBook = {
         hash: (current?.hash !== null && current?.hash !== "") ? current?.hash : "none",
         data: (current?.data !== null && current?.data !== "") ? current?.data : "none",
     };
 
-    return manga;
+    const book: Blob[] = [];
+
+    Array.from(manga.data).map(async (page) => {
+
+        const current: void | Blob = await fetch(`${coversURL}/data/${manga.hash}/${page}`)
+            .then((res) => { return res.blob(); })
+            .catch((err) => console.error(err));
+
+        if (current?.type) book.push(current);
+    })
+
+    return book;
 }
+
+
 
 function setFeedAttributes(attr: string): IFeedAttributes {
 
