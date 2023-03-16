@@ -1,18 +1,51 @@
-export function FeaturedCard() {
-	return (
-		<div className='featuredCard w-60 h-[23rem] bg-slate-900 shadow-xl rounded-xl'>
-			<div className='cover flex justify-center content-center items-center w-full h-52 rounded-xl'>
-				<img
-					src='src/assets/Vol43.webp'
-					alt='Shoes'
-					className='rounded-xl w-44 h-44'
-				/>
-			</div>
+import { useQuery } from "@tanstack/react-query";
+import { getAllManga, getMangaCover } from "../../../services/api";
 
-			<div className='card-body items-center text-center'>
-				<h1 className='card-title'>Shoes!</h1>
-				<p className='mt-1'>If a dog chews shoes whose shoes does he choose?</p>
-			</div>
+export function FeaturedCard() {
+	const retrievedManga = useQuery({
+		queryKey: ["manga"],
+		queryFn: () => getAllManga("featured"),
+	});
+
+	if (retrievedManga.isLoading) return <p>Loading</p>;
+	if (retrievedManga.error) return <p>error</p>;
+
+	return (
+		<div className='overflow-scroll flex absolute'>
+			{retrievedManga.data?.map((manga) => {
+				let fileName: string = "";
+				manga.relationships.map((rel) => {
+					if (rel.type === "cover_art") fileName = rel.attributes?.fileName!;
+				});
+
+				return (
+					<div className='card bg-slate-800 w-[300px] h-[480px] m-5'>
+						<h1 className='card-title justify-center mt-4 ml-5 mr-5'>
+							{Object.values(manga.attributes.title)[0]}
+						</h1>
+						<div className='cover flex justify-center content-center items-center w-full h-52 rounded-xl'>
+							<img
+								src={`https://uploads.mangadex.org/covers/${manga.id}/${fileName}`}
+								alt='Anime Cover'
+								className='rounded-xl w-44 h-44'
+							/>
+						</div>
+
+						<div className='card-body text-left'>
+							<p>Type: {manga.attributes.publicationDemographic}</p>
+							<p>
+								Genre:{" "}
+								{manga.attributes.tags.map((tag, index) => {
+									if (index < 3)
+										return `${Object.values(tag.attributes.name)} `;
+								})}
+							</p>
+							<p>Release Year: {manga.attributes.year}</p>
+							<p>Status: {manga.attributes.status}</p>
+						</div>
+					</div>
+				);
+			})}
 		</div>
 	);
 }
