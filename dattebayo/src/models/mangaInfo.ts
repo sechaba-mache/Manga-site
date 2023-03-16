@@ -1,14 +1,14 @@
 export interface IInfo {
     id: string
     type: string
-    attributes: IAttributes | string
-    relationships: IRelationship[] | string
+    attributes: IAttributes
+    relationships: IRelationship[]
 }
 
 export interface IAttributes {
     title: { [key: string]: string }
     altTitles: { [key: string]: string }[] | string
-    description: { [key: string]: string }[] | string
+    description: { [key: string]: string }[]
     isLocked: boolean
     links: { [key: string]: string }[] | string
     originalLanguage: string
@@ -18,7 +18,7 @@ export interface IAttributes {
     status: string
     year: number | string
     contentRating: string
-    tags: ITag[] | string
+    tags: ITag[]
     state: string
     chapterNumbersResetOnNewVolume: boolean
     createdAt: string
@@ -31,8 +31,8 @@ export interface IAttributes {
 export interface ITag {
     id: string
     type: string
-    attributes: IAttributes2 | string
-    relationships: IRelationship[] | string
+    attributes: IAttributes2
+    relationships: IRelationship[]
 }
 
 export interface IAttributes2 {
@@ -45,7 +45,7 @@ export interface IAttributes2 {
 export interface IRelationship {
     id: string
     type: string
-    attributes?: IAttributes3 | string
+    attributes?: IAttributes3
 }
 
 export interface IAttributes3 {

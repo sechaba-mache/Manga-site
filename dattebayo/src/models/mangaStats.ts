@@ -1,5 +1,5 @@
 export interface IStatistics {
-    comments: IComments | string
+    comments: IComments
     rating: IRating | string
     follows: number | string
 }
