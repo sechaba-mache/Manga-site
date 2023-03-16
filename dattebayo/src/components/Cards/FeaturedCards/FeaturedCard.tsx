@@ -9,7 +9,7 @@ export function FeaturedCard(featuredManga: IInfo) {
 	});
 
 	return (
-		<div className='grid grid-cols-myGrid grid-rows-myGrid bg-slate-800 w-[300px] h-[500px] m-5 rounded-xl 	text-center'>
+		<div className='grid grid-cols-myGrid grid-rows-myGrid bg-slate-800 w-[300px] h-[500px] m-5 rounded-xl 	text-center cursor-pointer'>
 			<div className='grid col-cardCols row-title content-center'>
 				<h1>{Object.values(featuredManga.attributes.title)[0]}</h1>
 			</div>
