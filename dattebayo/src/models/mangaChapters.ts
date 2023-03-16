@@ -3,8 +3,8 @@ import { IRelationship } from "./mangaInfo";
 export interface IFeedInfo {
     id: string
     type: string
-    attributes: IFeedAttributes | string
-    relationships: IRelationship[] | string
+    attributes: IFeedAttributes
+    relationships: IRelationship[]
 }
 
 export interface IFeedAttributes {
