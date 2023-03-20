@@ -46,12 +46,28 @@ export async function getAllManga(type: string): Promise<IInfo[]> {
     return mangaInfo;
 }
 
+export async function getMangaByID(id: string): Promise<IInfo> {
 
+    const feed = await fetch(`${baseURL}/manga/${id}`)
+        .then((res) => { return res.json(); })
+        .then((data) => { return data.data; })
+        .catch((err) => console.error(err));
+
+    const current: { [key: string]: unknown } = JSON.parse(JSON.stringify(feed));
+
+    return {
+        id: current?.id as string,
+        type: current?.type as string,
+        attributes: setAttributes(current?.attributes as string),
+        relationships: setRelationships(current?.relationships as string),
+    };
+}
 
 export function getMangaCover(id: string, fileName: string): string {
 
     return `${coversURL}/covers/${id}/${fileName}`;
 }
+
 
 export async function getMangaFeedByID(id: string): Promise<IFeedInfo[] | void> {
 
