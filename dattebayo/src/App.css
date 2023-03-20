@@ -16,3 +16,7 @@
 #featuredCardContainer {
 	display: flex;
 }
+
+::-webkit-scrollbar {
+	size: 5px;
+}

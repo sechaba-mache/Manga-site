@@ -6,10 +6,6 @@ export function NormalCard(manga: IInfo) {
 		if (rel.type === "cover_art") fileName = rel.attributes?.fileName!;
 	});
 
-	console.log(
-		Object.values(manga.attributes.title)[0],
-		`https://uploads.mangadex.org/covers/${manga.id}/${fileName}`
-	);
 	return (
 		<div className='normalCard w-48 h-60 bg-white shadow-xl rounded-xl m-5 cursor-pointer'>
 			<img
