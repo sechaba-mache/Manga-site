@@ -1,17 +1,41 @@
-export function FeaturedCard() {
+import { UseQueryResult } from "@tanstack/react-query";
+import { IInfo } from "../../../models/mangaInfo";
+import { getAllManga, getMangaCover } from "../../../services/api";
+
+export function FeaturedCard(featuredManga: IInfo) {
+	let fileName: string = "";
+	featuredManga.relationships.map((rel) => {
+		if (rel.type === "cover_art") fileName = rel.attributes?.fileName!;
+	});
+
 	return (
-		<div className='featuredCard w-60 h-[23rem] bg-slate-900 shadow-xl rounded-xl'>
-			<div className='cover flex justify-center content-center items-center w-full h-52 rounded-xl'>
-				<img
-					src='src/assets/Vol43.webp'
-					alt='Shoes'
-					className='rounded-xl w-44 h-44'
-				/>
+		<div className='grid grid-cols-myGrid grid-rows-myGrid bg-slate-800 w-[300px] h-[500px] m-5 rounded-xl 	text-center cursor-pointer'>
+			<div className='grid col-cardCols row-title content-center'>
+				<h1>{Object.values(featuredManga.attributes.title)[0]}</h1>
 			</div>
 
-			<div className='card-body items-center text-center'>
-				<h1 className='card-title'>Shoes!</h1>
-				<p className='mt-1'>If a dog chews shoes whose shoes does he choose?</p>
+			<div className='grid col-cardCols row-image'>
+				<img
+					src={`https://uploads.mangadex.org/covers/${featuredManga.id}/${fileName}`}
+					alt='Anime Cover'
+					className='rounded-xl w-[60%] h-full self-center justify-self-center'
+				/>
+			</div>
+			<div className='cardBody col-cardCols row-body mt-5 ml-6 w-full h-full text-left'>
+				<p className='mb-1'>
+					Type: {featuredManga.attributes.publicationDemographic}
+				</p>
+				<p className='mb-1'>
+					Genres:
+					{featuredManga.attributes.tags.map((tag, index) => {
+						if (index < 3)
+							return (
+								<li className='ml-8'>{Object.values(tag.attributes.name)}</li>
+							);
+					})}
+				</p>
+				<p className='mb-1'>Release Year: {featuredManga.attributes.year}</p>
+				<p>Status: {featuredManga.attributes.status}</p>
 			</div>
 		</div>
 	);
