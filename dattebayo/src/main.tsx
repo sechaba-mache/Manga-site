@@ -4,10 +4,12 @@ import App from "./App";
 import "../dist/App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import ErrorPage from "./error-page";
+import ErrorPage from "./ErrorPage";
 import { MangaPage } from "./MangaPage";
 import { ClickedCard } from "./components/Cards/ClickedCard/ClickedCard";
 import { getMangaBook } from "./services/api";
+import { Homepage } from "./Homepage";
+import { LoadingPage } from "./LoadingPage";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -17,14 +19,20 @@ const router = createBrowserRouter([
 		errorElement: <ErrorPage />,
 		children: [
 			{
-				path: "/info/:id/:fileName",
-				element: <ClickedCard />,
+				path: "/",
+				element: <Homepage />,
+				errorElement: <ErrorPage />,
+				children: [
+					{
+						path: "/info/:id/:fileName",
+						element: <ClickedCard />,
+						errorElement: <ErrorPage />,
+					},
+				],
 			},
 		],
 	},
 ]);
-
-// getMangaBook("418791c0-35cf-4f87-936b-acd9cddf0989")
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 	<QueryClientProvider client={queryClient}>

@@ -11,9 +11,11 @@ export function FeaturedCard(featuredManga: IInfo) {
 
 	return (
 		<Link to={`info/${featuredManga.id}/${fileName}`}>
-			<div className='grid grid-cols-myGrid grid-rows-myGrid bg-slate-800 w-[300px] h-[500px] m-5 rounded-xl 	text-center cursor-pointer'>
-				<div className='grid col-cardCols row-title content-center'>
-					<h1>{Object.values(featuredManga.attributes.title)[0]}</h1>
+			<div className='grid grid-cols-myGrid grid-rows-myGrid bg-orange-500 text-main w-[350px] h-[440px] m-5 rounded-xl 	text-center cursor-pointer'>
+				<div className='grid col-cardCols row-title content-center justify-center'>
+					<h1 className='pt-2 line-clamp-2 text-xl font-semibold w-52'>
+						{Object.values(featuredManga.attributes.title)[0]}
+					</h1>
 				</div>
 
 				<div className='grid col-cardCols row-image w-full h-full'>
@@ -23,14 +25,14 @@ export function FeaturedCard(featuredManga: IInfo) {
 						className='rounded-xl w-[60%] h-full self-center justify-self-center'
 					/>
 				</div>
-				<div className='cardBody col-cardCols row-body mt-5 ml-6 w-full h-full text-left'>
+				<div className='cardBody col-cardCols row-body mt-5 ml-6 w-full h-full text-left font-semibold'>
 					<p className='mb-1'>
 						Type: {featuredManga.attributes.publicationDemographic}
 					</p>
 					<p className='mb-1'>
 						Genres:
 						{featuredManga.attributes.tags.map((tag, index) => {
-							if (index < 3)
+							if (index < 2)
 								return (
 									<li
 										key={`${tag.id}`}
@@ -40,7 +42,7 @@ export function FeaturedCard(featuredManga: IInfo) {
 								);
 						})}
 					</p>
-					<p className='mb-1'>Release Year: {featuredManga.attributes.year}</p>
+					<p>Year: {featuredManga.attributes.year}</p>
 					<p>Status: {featuredManga.attributes.status}</p>
 				</div>
 			</div>

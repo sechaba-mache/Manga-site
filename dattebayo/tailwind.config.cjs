@@ -8,10 +8,15 @@ module.exports = {
 	],
 	theme: {
 		extend: {
+			colors: {
+				main: "#131515",
+				secondary: "rgb(249 115 22)",
+				tertiary: "#B9CFD4",
+			},
 			gridTemplateColumns: { myGrid: "1fr", clickedCardGridCol: "35%, 1fr" },
 			gridTemplateRows: {
 				myGrid: "17% 40% 43%",
-				clickedCardGridRow: "67%, 1fr",
+				clickedCardGridRow: "60%, 1fr",
 			},
 			gridColumn: {
 				cardCols: "1/2",
@@ -28,7 +33,7 @@ module.exports = {
 			},
 		},
 	},
-	plugins: [require("daisyui")],
+	plugins: [require("daisyui"), require("@tailwindcss/line-clamp")],
 	daisyui: {
 		styled: true,
 		themes: true,
