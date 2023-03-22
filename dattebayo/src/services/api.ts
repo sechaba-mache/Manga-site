@@ -19,13 +19,19 @@ export async function getAllManga(type: string): Promise<IInfo[]> {
     let allManga: Array<string> = [];
 
     if (type === "featured") {
-        allManga = await fetch(`${baseURL}/manga?order[rating]=desc&&includes[]=cover_art&contentRating[]=safe&limit=10`)
+        allManga = await fetch(`${baseURL}/manga?order[followedCount]=desc&includes[]=cover_art&contentRating[]=safe&limit=10`)
+            .then((res) => res.json())
+            .then((data) => data.data)
+            .catch((err) => console.error("An error has occured", err));
+    }
+    else if (type.toLowerCase() !== "unordered") {
+        allManga = await fetch(`${baseURL}/manga?order[${type}]=desc&includes[]=cover_art&contentRating[]=safe&limit=56`)
             .then((res) => res.json())
             .then((data) => data.data)
             .catch((err) => console.error("An error has occured", err));
     }
     else {
-        allManga = await fetch(`${baseURL}/manga?includes[]=cover_art&contentRating[]=safe&limit=50`)
+        allManga = await fetch(`${baseURL}/manga?includes[]=cover_art&contentRating[]=safe&limit=56`)
             .then((res) => res.json())
             .then((data) => data.data)
             .catch((err) => console.error("An error has occured", err));
@@ -46,14 +52,29 @@ export async function getAllManga(type: string): Promise<IInfo[]> {
     return mangaInfo;
 }
 
+export async function getMangaByID(id: string): Promise<IInfo> {
 
+    const feed = await fetch(`${baseURL}/manga/${id}`)
+        .then((res) => { return res.json(); })
+        .then((data) => { return data.data; })
+        .catch((err) => console.error(err));
+
+    const current: { [key: string]: unknown } = JSON.parse(JSON.stringify(feed));
+
+    return {
+        id: current?.id as string,
+        type: current?.type as string,
+        attributes: setAttributes(current?.attributes as string),
+        relationships: setRelationships(current?.relationships as string),
+    };
+}
 
 export function getMangaCover(id: string, fileName: string): string {
 
     return `${coversURL}/covers/${id}/${fileName}`;
 }
 
-export async function getMangaFeedByID(id: string): Promise<IFeedInfo[] | void> {
+export async function getMangaFeedByID(id: string): Promise<IFeedInfo[]> {
 
     const feed: Array<string> = await fetch(`${baseURL}/manga/${id}/feed`)
         .then((res) => { return res.json(); })
@@ -76,32 +97,31 @@ export async function getMangaFeedByID(id: string): Promise<IFeedInfo[] | void> 
     return mangaFeed;
 }
 
-export async function getMangaBook(chapterID: string): Promise<Blob[]> {
+export async function getMangaBook(chapterID: string): Promise<string[]> {
 
     const bookInfo: string = await fetch(`${mangaBookURL}/${chapterID}`)
         .then((res) => { return res.json(); })
-        .then((data) => { return data.chapter; })
-        .catch((err) => console.error(err));
+        .then((data) => { if (data?.errors) return "error"; return data.chapter; })
+        .catch((err) => { console.error(err); return "error" });
 
-    const current = JSON.parse(JSON.stringify(bookInfo));
 
-    const manga: IMangaBook = {
-        hash: (current?.hash !== null && current?.hash !== "") ? current?.hash : "None",
-        data: (current?.data !== null && current?.data !== "") ? current?.data : "None",
-    };
+    if (bookInfo !== "error") {
+        const current = JSON.parse(JSON.stringify(bookInfo));
 
-    const book: Blob[] = [];
+        const manga: IMangaBook = {
+            hash: (current?.hash !== null && current?.hash !== "") ? current?.hash : "None",
+            data: (current?.data !== null && current?.data !== "") ? current?.data : "None",
+        };
 
-    Array.from(manga.data).map(async (page) => {
+        const book: string[] = [];
 
-        const current: void | Blob = await fetch(`${coversURL}/data/${manga.hash}/${page}`)
-            .then((res) => { return res.blob(); })
-            .catch((err) => console.error(err));
+        Array.from(manga.data).map((page) => {
+            book.push(`${coversURL}/data/${manga.hash}/${page}`)
+        })
 
-        if (current?.type) book.push(current);
-    })
-
-    return book;
+        return book;
+    }
+    return [bookInfo];
 }
 
 export async function getMangaStatsByID(id: string) {
