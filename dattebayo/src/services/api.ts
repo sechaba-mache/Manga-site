@@ -74,7 +74,7 @@ export function getMangaCover(id: string, fileName: string): string {
     return `${coversURL}/covers/${id}/${fileName}`;
 }
 
-export async function getMangaFeedByID(id: string): Promise<IFeedInfo[]> {
+export async function getMangaFeedByID(id: string): Promise<IFeedInfo[] | void> {
 
     const feed: Array<string> = await fetch(`${baseURL}/manga/${id}/feed`)
         .then((res) => { return res.json(); })
