@@ -1,6 +1,6 @@
 import { useQueries, useQuery, UseQueryResult } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import ErrorPage from "../../../ErrorPage";
 import { LoadingPage } from "../../../LoadingPage";
 import { IFeedChapter } from "../../../models/feedChapter";
@@ -108,7 +108,7 @@ export function ClickedCard() {
 									if (index !== data.attributes.tags.length - 1 && index < 3) {
 										return (
 											<li
-												key={`${tag.id}`}
+												key={`${tag.id}` + Math.random()}
 												className='ml-8'>
 												{Object.values(tag.attributes.name)},
 											</li>
@@ -117,7 +117,7 @@ export function ClickedCard() {
 									if (index < 3)
 										return (
 											<li
-												key={`${tag.id}`}
+												key={`${tag.id}` + Math.random()}
 												className='ml-8'>
 												{Object.values(tag.attributes.name)}
 											</li>
@@ -145,24 +145,26 @@ export function ClickedCard() {
 						<h1 className='text-xl font-semibold text-center '>CHAPTERS</h1>
 						<div className='content w-[620px] h-[165px] self-center justify-self-center flex'>
 							<HorizontalScroll
-								children={mangaPages.map((entry) => {
+								children={mangaPages.map((entry, index) => {
 									return (
-										<div
-											key={entry.pages[0] + entry.chapter}
-											className='card bg-base-100 shadow-xl w-36 image-full mr-3 ml-3 mb-5'>
-											<figure>
-												<img
-													src={entry.pages[0]}
-													alt='Anime Cover'
-													className='rounded-xl w-full'
-												/>
-											</figure>
-											<div className='card-body'>
-												<h2 className='card-title '>
-													Chapter: {entry.chapter}
-												</h2>
+										<Link to={`/${id}/${index}`}>
+											<div
+												key={entry.pages[0] + entry.chapter}
+												className='card bg-base-100 shadow-xl w-36 image-full mr-3 ml-3 mb-5'>
+												<figure>
+													<img
+														src={entry.pages[0]}
+														alt='Anime Cover'
+														className='rounded-xl w-full'
+													/>
+												</figure>
+												<div className='card-body'>
+													<h2 className='card-title '>
+														Chapter: {entry.chapter}
+													</h2>
+												</div>
 											</div>
-										</div>
+										</Link>
 									);
 								})}
 							/>

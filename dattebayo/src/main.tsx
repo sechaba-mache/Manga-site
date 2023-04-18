@@ -10,6 +10,7 @@ import { ClickedCard } from "./components/Cards/ClickedCard/ClickedCard";
 import { getMangaBook } from "./services/api";
 import { Homepage } from "./Homepage";
 import { LoadingPage } from "./LoadingPage";
+import { ReadManga } from "./components/ReadManga/ReadManga"
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -30,6 +31,11 @@ const router = createBrowserRouter([
 					},
 				],
 			},
+			{
+				path: "/:id/:mangaIndex",
+				element: <ReadManga />,
+				errorElement: <ErrorPage />
+			}
 		],
 	},
 ]);
