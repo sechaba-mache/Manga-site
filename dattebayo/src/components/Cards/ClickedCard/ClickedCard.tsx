@@ -59,9 +59,9 @@ export function ClickedCard() {
 
 	if (
 		(mangaChapters.length === 0 ||
-			mangaChapters.map((chapter) => chapter.isLoading).includes(true)) &&
-		mangaFeed.isLoading &&
-		mangaInfo.isLoading &&
+			mangaChapters.map((chapter) => chapter.isLoading).includes(true)) ||
+		mangaFeed.isLoading ||
+		mangaInfo.isLoading ||
 		mangaData === undefined
 	) {
 		return <LoadingPage />;

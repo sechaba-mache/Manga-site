@@ -48,9 +48,9 @@ export function ReadManga() {
     const mangaData = mangaInfo.data;
 
     if (
-        mangaChapter.isLoading &&
-        mangaFeed.isLoading &&
-        mangaInfo.isLoading &&
+        mangaChapter.isLoading ||
+        mangaFeed.isLoading ||
+        mangaInfo.isLoading ||
         mangaData === undefined
     ) {
         return <LoadingPage />;
